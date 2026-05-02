@@ -2,7 +2,7 @@ name: Atualização Automática Semiárido Vivo
 
 on:
   schedule:
-    # Roda a cada 6 horas (00:00, 06:00, 12:00, 18:00 UTC)
+    # Roda a cada 6 horas (20:30, 00:00, 06:00, 12:00, 18:00 UTC)
     - cron: "0 */6 * * *"
   workflow_dispatch: # Permite que você rode manualmente se quiser
 

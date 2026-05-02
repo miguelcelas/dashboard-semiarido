@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curadoria Semiárido Vivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FCF9F2; }
+        h1, h2 { font-family: 'Lora', serif; }
+        .card-brutal {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transition: all 0.2s ease;
+        }
+        .card-brutal:hover { box-shadow: 0px 0px 0px 0px rgba(0,0,0,1); transform: translate(2px, 2px); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Cabeçalho -->
+    <header class="max-w-6xl mx-auto mb-12 border-b-4 border-black pb-6">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter">Semiárido Vivo</h1>
+                <p class="text-lg mt-2 text-orange-900 font-medium">Narrativas que semeiam esperança • Monitor de Notícias</p>
+            </div>
+            <div class="text-right">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-800">
+                    <span class="w-2 h-2 mr-2 bg-green-500 rounded-full animate-pulse"></span>
+                    ATUALIZADO A CADA 6H
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+        <!-- Filtros -->
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button onclick="filtrar('Tudo')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">TUDO</button>
+            <button onclick="filtrar('PE')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">PE</button>
+            <button onclick="filtrar('BA')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">BA</button>
+            <button onclick="filtrar('CE')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">CE</button>
+            <button onclick="filtrar('RN')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">RN</button>
+            <button onclick="filtrar('AL')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">AL</button>
+            <button onclick="filtrar('PB')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">PB</button>
+            <button onclick="filtrar('SE')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">SE</button>
+            <button onclick="filtrar('MA')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">MA</button>
+            <button onclick="filtrar('MG')" class="px-4 py-1 border-2 border-black font-bold hover:bg-black hover:text-white transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">MG</button>
+        </div>
+
+        <!-- Grade de Notícias -->
+        <div id="feed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- As notícias entrarão aqui via Script -->
+            <p class="col-span-full text-center py-20 text-gray-500 italic">Carregando sementes de informação...</p>
+        </div>
+    </main>
+
+    <script>
+        let todasNoticias = [];
+
+        async function carregarNoticias() {
+            try {
+                const response = await fetch('noticias.json');
+                todasNoticias = await response.json();
+                renderizar(todasNoticias);
+            } catch (e) {
+                document.getElementById('feed').innerHTML = "O banco de dados está sendo semeado. Volte em instantes!";
+            }
+        }
+
+        function renderizar(lista) {
+            const container = document.getElementById('feed');
+            container.innerHTML = lista.map(n => `
+                <div class="bg-white border-2 border-black p-6 card-brutal flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-black text-white text-[10px] font-bold px-2 py-1 uppercase tracking-tighter">${n.estado}</span>
+                            <span class="text-xs text-gray-500 font-semibold">${n.data}</span>
+                        </div>
+                        <h2 class="text-xl font-bold leading-tight mb-3 hover:text-orange-700 cursor-pointer">${n.manchete}</h2>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-3">👉🏾 ${n.resumo}</p>
+                        <p class="text-xs font-bold uppercase mb-6 text-gray-400">📰 ${n.veiculo}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="${n.link}" target="_blank" class="flex-1 text-center py-2 border-2 border-black text-xs font-bold hover:bg-orange-50 transition">LER ORIGINAL 🔗</a>
+                        <button onclick="copiar('${n.manchete}', '${n.resumo}', '${n.veiculo}', '${n.link}')" 
+                                class="px-4 py-2 bg-black text-white text-xs font-bold hover:bg-orange-700 transition">COPIAR 📋</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrar(estado) {
+            if (estado === 'Tudo') return renderizar(todasNoticias);
+            const filtradas = todasNoticias.filter(n => n.estado === estado);
+            renderizar(filtradas);
+        }
+
+        function copiar(titulo, resumo, veiculo, link) {
+            const texto = `✏️ ${titulo}\n👉🏾 ${resumo}\n📰 ${veiculo}\n🔗 ${link}`;
+            navigator.clipboard.writeText(texto);
+            alert("Copiado para sua newsletter!");
+        }
+
+        carregarNoticias();
+    </script>
+</body>
+</html>

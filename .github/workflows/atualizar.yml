@@ -1,0 +1,33 @@
+name: Atualização Automática Semiárido Vivo
+
+on:
+  schedule:
+    # Roda a cada 6 horas (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: "0 */6 * * *"
+  workflow_dispatch: # Permite que você rode manualmente se quiser
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar dependências
+        run: pip install feedparser
+
+      - name: Executar script de monitoramento
+        run: python crawler.py
+
+      - name: Salvar alterações no GitHub
+        run: |
+          git config --global user.name "Robô Semiárido Vivo"
+          git config --global user.email "bot@semiaridovivo.com"
+          git add noticias.json
+          git commit -m "Atualização automática de notícias: $(date)" || echo "Sem mudanças"
+          git push
